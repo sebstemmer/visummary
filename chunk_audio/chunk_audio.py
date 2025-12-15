@@ -1,33 +1,40 @@
 import os
 
-from chunk_audio.audio_chunks_params import AudioChunksParams
+from chunk_audio.chunk_audio_params import ChunkAudioParams
 from download_video import download_video_utils
 from chunk_audio import chunk_audio_utils
 from pydub import AudioSegment
 import json
 
 
-def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
-    audio_path = download_video_utils.get_audio_path(base_path)
+def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
+    print(f"chunk audio...")
 
-    print(f"chunk audio {audio_path}...")
+    # check if already done
+
+    audio_chunks_data_path = chunk_audio_utils.get_audio_chunks_data_path(
+        base_path=base_path, chunk_audio_params=audio_chunks_params
+    )
+
+    if os.path.isfile(audio_chunks_data_path):
+        print(f"...audio already chunked")
+        return
+
+    # create folder for chunks if it does not already exist
 
     audio_chunks_folder_path = chunk_audio_utils.get_audio_chunks_folder_path(
         base_path=base_path,
-        audio_chunks_params=audio_chunks_params,
+        chunk_audio_params=audio_chunks_params,
     )
 
     os.makedirs(audio_chunks_folder_path, exist_ok=True)
 
-    audio_chunks_data_path = chunk_audio_utils.get_audio_chunks_data_path(
-        base_path=base_path, audio_chunks_params=audio_chunks_params
-    )
+    # load audio
 
-    if os.path.isfile(audio_chunks_data_path):
-        print(f"...audio {audio_path} already chunked")
-        return
-
+    audio_path = download_video_utils.get_audio_path(base_path)
     audio = AudioSegment.from_file(audio_path)
+
+    # calc parameters for chunking
 
     audio_length_in_ms: int = len(audio)
 
@@ -36,6 +43,8 @@ def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
     snippets = range(0, audio_length_in_ms, chunk_size_in_ms)
 
     overlap_in_ms = chunk_size_in_ms * (audio_chunks_params.overlap_in_percent / 100.0)
+
+    # chunk audio
 
     num_chunks = 0
     for idx, start_in_ms in enumerate(snippets):
@@ -58,9 +67,11 @@ def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
 
         num_chunks += 1
 
+    # save audio_chunks_data as json
+
     json.dump(
         {"num_chunks": num_chunks, "audio_length_in_ms": audio_length_in_ms},
         open(audio_chunks_data_path, "w"),
     )
 
-    print(f"...chunked audio {audio_path}")
+    print(f"...chunked audio")

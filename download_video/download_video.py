@@ -4,12 +4,12 @@ from download_video import download_video_utils
 
 
 def download(video_url: str, base_path: str) -> None:
-    print(f"downloading video {video_url}...")
+    print(f"downloading video...")
 
     audio_path = download_video_utils.get_audio_path(base_path)
 
     if os.path.isfile(audio_path):
-        print(f"...video {video_url} already downloaded")
+        print(f"...video already downloaded")
         return
 
     opts = {
@@ -20,4 +20,4 @@ def download(video_url: str, base_path: str) -> None:
     with yt_dlp.YoutubeDL(opts) as ydl:
         ydl.download([video_url])
 
-    print(f"...{video_url} video downloaded")
+    print(f"...downloaded video")
