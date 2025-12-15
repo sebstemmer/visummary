@@ -4,6 +4,7 @@ from chunk_audio.audio_chunks_params import AudioChunksParams
 from download_video import download_video_utils
 from chunk_audio import chunk_audio_utils
 from pydub import AudioSegment
+import json
 
 
 def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
@@ -19,7 +20,7 @@ def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
     os.makedirs(audio_chunks_folder_path, exist_ok=True)
 
     audio_chunks_data_path = chunk_audio_utils.get_audio_chunks_data_path(
-        audio_chunks_folder_path=audio_chunks_folder_path
+        base_path=base_path, audio_chunks_params=audio_chunks_params
     )
 
     if os.path.isfile(audio_chunks_data_path):
@@ -48,7 +49,8 @@ def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
 
         chunk_in_ms.export(
             chunk_audio_utils.get_audio_chunk_path(
-                audio_chunks_folder_path=audio_chunks_folder_path,
+                base_path=base_path,
+                audio_chunks_params=audio_chunks_params,
                 chunk_idx=idx,
             ),
             format="mp3",
@@ -56,10 +58,9 @@ def chunk(base_path: str, audio_chunks_params: AudioChunksParams) -> None:
 
         num_chunks += 1
 
-    chunk_audio_utils.save_audio_chunks_data(
-        audio_chunks_data_path=audio_chunks_data_path,
-        num_chunks=num_chunks,
-        audio_length_in_ms=audio_length_in_ms,
+    json.dump(
+        {"num_chunks": num_chunks, "audio_length_in_ms": audio_length_in_ms},
+        open(audio_chunks_data_path, "w"),
     )
 
     print(f"...chunked audio {audio_path}")
