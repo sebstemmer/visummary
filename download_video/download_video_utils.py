@@ -1,2 +1,2 @@
-def get_audio_path(base_path: str):
+def get_audio_path(base_path: str) -> str:
     return f"{base_path}/audio.webm"

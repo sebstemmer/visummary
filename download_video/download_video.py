@@ -3,7 +3,7 @@ import yt_dlp
 from download_video import download_video_utils
 
 
-def download_video(video_url: str, base_path: str):
+def download(video_url: str, base_path: str) -> None:
     print(f"downloading video {video_url}...")
 
     audio_path = download_video_utils.get_audio_path(base_path)
