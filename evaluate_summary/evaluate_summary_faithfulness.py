@@ -1,25 +1,15 @@
-import os
 import json
-from typing import Callable
+import os
+
 import utils
-from chunk_audio.chunk_audio_params import ChunkAudioParams
 from evaluate_summary import evaluate_summary_utils
+from evaluate_summary.evaluate_summary_params import EvaluateSummaryParams
 from summarize_transcripts import summarize_transcripts_utils
-from summarize_transcripts.summarize_transcripts_params import (
-    SummarizeTranscriptsParams,
-)
 from transcribe_audio_chunks import transcribe_audio_chunks_utils
-from transcribe_audio_chunks.transcribe_audio_chunks_params import (
-    TranscribeAudioChunksParams,
-)
 
 
 def evaluate(
-    base_path: str,
-    chunk_audio_params: ChunkAudioParams,
-    transcribe_audio_chunks_params: TranscribeAudioChunksParams,
-    summarize_transcripts_params: SummarizeTranscriptsParams,
-    llm_evaluator_system_and_user_prompt_to_response: Callable[[str, str], str],
+    evaluate_summary_params: EvaluateSummaryParams,
 ):
     print(f"evaluate faithfulness of summary...")
 
@@ -27,10 +17,7 @@ def evaluate(
 
     faithfulness_evaluation_path = (
         evaluate_summary_utils.get_faithfulness_evaluation_path(
-            base_path=base_path,
-            chunk_audio_params=chunk_audio_params,
-            transcribe_audio_chunks_params=transcribe_audio_chunks_params,
-            summarize_transcripts_params=summarize_transcripts_params,
+            evaluate_summary_params=evaluate_summary_params
         )
     )
 
@@ -77,14 +64,11 @@ def evaluate(
     """
 
     summary_placeholder_value = summarize_transcripts_utils.get_summary(
-        base_path=base_path,
-        chunk_audio_params=chunk_audio_params,
-        transcribe_audio_chunks_params=transcribe_audio_chunks_params,
-        summarize_transcripts_params=summarize_transcripts_params,
+        summarize_transcripts_params=evaluate_summary_params.summarize_transcripts_params,
     )
 
     transcripts = transcribe_audio_chunks_utils.get_transcripts(
-        base_path=base_path, chunk_audio_params=chunk_audio_params
+        evaluate_summary_params.transcribe_audio_chunks_params
     )
 
     transcripts_placeholder_value = "\n\n".join(
@@ -100,9 +84,11 @@ def evaluate(
 
     # perform and save faithfulness evaluation as json
 
-    faithfulness_evaluation_response = llm_evaluator_system_and_user_prompt_to_response(
-        system_prompt,
-        user_prompt,
+    faithfulness_evaluation_response = (
+        evaluate_summary_params.llm_evaluator_system_and_user_prompt_to_response(
+            system_prompt,
+            user_prompt,
+        )
     )
 
     faithfulness_evaluation_as_json = json.loads(faithfulness_evaluation_response)

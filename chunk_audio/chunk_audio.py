@@ -1,20 +1,20 @@
 import os
 
+from pydub import AudioSegment
+
 import utils
+from chunk_audio import chunk_audio_utils
 from chunk_audio.chunk_audio_params import ChunkAudioParams
 from download_video import download_video_utils
-from chunk_audio import chunk_audio_utils
-from pydub import AudioSegment
-import json
 
 
-def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
+def chunk(audio_chunks_params: ChunkAudioParams) -> None:
     print(f"chunk audio...")
 
     # check if already done
 
     audio_chunks_data_path = chunk_audio_utils.get_audio_chunks_data_path(
-        base_path=base_path, chunk_audio_params=audio_chunks_params
+        chunk_audio_params=audio_chunks_params
     )
 
     if os.path.isfile(audio_chunks_data_path):
@@ -24,7 +24,6 @@ def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
     # create folder for chunks if it does not already exist
 
     audio_chunks_folder_path = chunk_audio_utils.get_audio_chunks_folder_path(
-        base_path=base_path,
         chunk_audio_params=audio_chunks_params,
     )
 
@@ -32,7 +31,7 @@ def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
 
     # load audio
 
-    audio_path = download_video_utils.get_audio_path(base_path)
+    audio_path = download_video_utils.get_audio_path(audio_chunks_params.base_path)
     audio = AudioSegment.from_file(audio_path)
 
     # calc parameters for chunking
@@ -49,6 +48,8 @@ def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
 
     num_chunks = 0
     for idx, start_in_ms in enumerate(snippets):
+        print(f"create audio chunk {idx + 1}/{len(snippets)}")
+
         start_minus_overlap_in_ms = max(start_in_ms - overlap_in_ms, 0)
 
         end_plus_overlap_in_ms = min(
@@ -59,7 +60,6 @@ def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
 
         chunk_in_ms.export(
             chunk_audio_utils.get_audio_chunk_path(
-                base_path=base_path,
                 audio_chunks_params=audio_chunks_params,
                 chunk_idx=idx,
             ),

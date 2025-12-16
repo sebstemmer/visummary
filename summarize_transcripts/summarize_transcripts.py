@@ -1,21 +1,13 @@
 import os
 
-from chunk_audio import chunk_audio_utils
-from chunk_audio.chunk_audio_params import ChunkAudioParams
 from summarize_transcripts import summarize_transcripts_utils
 from summarize_transcripts.summarize_transcripts_params import (
     SummarizeTranscriptsParams,
 )
 from transcribe_audio_chunks import transcribe_audio_chunks_utils
-from transcribe_audio_chunks.transcribe_audio_chunks_params import (
-    TranscribeAudioChunksParams,
-)
 
 
 def summarize(
-    base_path: str,
-    chunk_audio_params: ChunkAudioParams,
-    transcribe_audio_chunks_params: TranscribeAudioChunksParams,
     summarize_transcripts_params: SummarizeTranscriptsParams,
 ):
     print(f"summarizing transcripts...")
@@ -23,9 +15,6 @@ def summarize(
     # check if already done
 
     summary_path = summarize_transcripts_utils.get_summary_path(
-        base_path=base_path,
-        chunk_audio_params=chunk_audio_params,
-        transcribe_audio_chunks_params=transcribe_audio_chunks_params,
         summarize_transcripts_params=summarize_transcripts_params,
     )
 
@@ -36,9 +25,6 @@ def summarize(
     # create folder for summary if it does not already exist
 
     summary_folder_path = summarize_transcripts_utils.get_summary_folder_path(
-        base_path=base_path,
-        chunk_audio_params=chunk_audio_params,
-        transcribe_audio_chunks_params=transcribe_audio_chunks_params,
         summarize_transcripts_params=summarize_transcripts_params,
     )
 
@@ -46,14 +32,8 @@ def summarize(
 
     # create system prompt
 
-    audio_length_in_ms = chunk_audio_utils.get_audio_length_in_ms(
-        base_path=base_path, chunk_audio_params=chunk_audio_params
-    )
-
     num_sentences_placeholder_value = str(
         summarize_transcripts_utils.get_num_sentences(
-            base_path=base_path,
-            chunk_audio_params=chunk_audio_params,
             summarize_transcripts_params=summarize_transcripts_params,
         )
     )
@@ -74,7 +54,7 @@ def summarize(
     # create user prompt
 
     transcripts = transcribe_audio_chunks_utils.get_transcripts(
-        base_path=base_path, chunk_audio_params=chunk_audio_params
+        transcribe_audio_chunks_params=summarize_transcripts_params.transcribe_audio_chunks_params
     )
 
     user_prompt = "\n\n".join(
