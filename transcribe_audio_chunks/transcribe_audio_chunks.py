@@ -44,7 +44,7 @@ def transcribe(
             chunk_idx=chunk_idx,
         )
 
-        transcript = transcribe_audio_chunks_params.sst_audio_path_to_transcript(
+        transcript = transcribe_audio_chunks_params.stt_audio_path_to_transcript(
             audio_path
         )
 

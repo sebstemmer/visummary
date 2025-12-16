@@ -8,13 +8,13 @@ from chunk_audio.chunk_audio_params import ChunkAudioParams
 from download_video import download_video_utils
 
 
-def chunk(audio_chunks_params: ChunkAudioParams) -> None:
+def chunk(chunk_audio_params: ChunkAudioParams) -> None:
     print(f"chunk audio...")
 
     # check if already done
 
     audio_chunks_data_path = chunk_audio_utils.get_audio_chunks_data_path(
-        chunk_audio_params=audio_chunks_params
+        chunk_audio_params=chunk_audio_params
     )
 
     if os.path.isfile(audio_chunks_data_path):
@@ -24,25 +24,25 @@ def chunk(audio_chunks_params: ChunkAudioParams) -> None:
     # create folder for chunks if it does not already exist
 
     audio_chunks_folder_path = chunk_audio_utils.get_audio_chunks_folder_path(
-        chunk_audio_params=audio_chunks_params,
+        chunk_audio_params=chunk_audio_params,
     )
 
     os.makedirs(audio_chunks_folder_path, exist_ok=True)
 
     # load audio
 
-    audio_path = download_video_utils.get_audio_path(audio_chunks_params.base_path)
+    audio_path = download_video_utils.get_audio_path(chunk_audio_params.base_path)
     audio = AudioSegment.from_file(audio_path)
 
     # calc parameters for chunking
 
     audio_length_in_ms: int = len(audio)
 
-    chunk_size_in_ms = audio_chunks_params.chunk_size_in_min * 60 * 1000
+    chunk_size_in_ms = chunk_audio_params.chunk_size_in_min * 60 * 1000
 
     snippets = range(0, audio_length_in_ms, chunk_size_in_ms)
 
-    overlap_in_ms = chunk_size_in_ms * (audio_chunks_params.overlap_in_percent / 100.0)
+    overlap_in_ms = chunk_size_in_ms * (chunk_audio_params.overlap_in_percent / 100.0)
 
     # chunk audio
 
@@ -60,7 +60,7 @@ def chunk(audio_chunks_params: ChunkAudioParams) -> None:
 
         chunk_in_ms.export(
             chunk_audio_utils.get_audio_chunk_path(
-                audio_chunks_params=audio_chunks_params,
+                audio_chunks_params=chunk_audio_params,
                 chunk_idx=idx,
             ),
             format="mp3",

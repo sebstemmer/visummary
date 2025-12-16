@@ -235,13 +235,15 @@ def _are_results_commutative(a_b: str, b_a: str) -> int:
     return 2
 
 
-def calculate_points(comparison_params: ComparisonParams) -> None:
+def calculate_points(compare_summaries_params: CompareSummariesParams) -> None:
     # init points to 0
     llm_model_id_to_points: dict[str, list[int]] = {}
-    for summary in comparison_params.summaries:
+    for summary in compare_summaries_params.summaries:
         llm_model_id_to_points[summary.llm_model_id] = [0, 0]
 
-    pairs = comparison_params.get_comparison_pairs()
+    pairs = compare_summaries_utils.get_comparison_pairs(
+        compare_summaries_params=compare_summaries_params
+    )
 
     for pair in pairs:
         llm_model_id_a = pair["llm_model_id_a"]
@@ -249,27 +251,27 @@ def calculate_points(comparison_params: ComparisonParams) -> None:
 
         if pair["faithfulness_is_commutative"] >= 1:
             if pair["a_b"]["winner_faithfulness"] == "A":
-                llm_model_id_to_points[llm_model_id_a][0] += 1
+                llm_model_id_to_points[llm_model_id_a][0] += 1  # type: ignore
             elif pair["a_b"]["winner_faithfulness"] == "B":
-                llm_model_id_to_points[llm_model_id_b][0] += 1
+                llm_model_id_to_points[llm_model_id_b][0] += 1  # type: ignore
             else:
-                llm_model_id_to_points[llm_model_id_a][0] += 0.5
-                llm_model_id_to_points[llm_model_id_b][0] += 0.5
+                llm_model_id_to_points[llm_model_id_a][0] += 0.5  # type: ignore
+                llm_model_id_to_points[llm_model_id_b][0] += 0.5  # type: ignore
         else:
-            llm_model_id_to_points[llm_model_id_a][0] += 0.5
-            llm_model_id_to_points[llm_model_id_b][0] += 0.5
+            llm_model_id_to_points[llm_model_id_a][0] += 0.5  # type: ignore
+            llm_model_id_to_points[llm_model_id_b][0] += 0.5  # type: ignore
 
         if pair["coverage_is_commutative"] >= 1:
             if pair["a_b"]["winner_coverage"] == "A":
-                llm_model_id_to_points[llm_model_id_a][1] += 1
+                llm_model_id_to_points[llm_model_id_a][1] += 1  # type: ignore
             elif pair["a_b"]["winner_coverage"] == "B":
-                llm_model_id_to_points[llm_model_id_b][1] += 1
+                llm_model_id_to_points[llm_model_id_b][1] += 1  # type: ignore
             else:
-                llm_model_id_to_points[llm_model_id_a][1] += 0.5
-                llm_model_id_to_points[llm_model_id_b][1] += 0.5
+                llm_model_id_to_points[llm_model_id_a][1] += 0.5  # type: ignore
+                llm_model_id_to_points[llm_model_id_b][1] += 0.5  # type: ignore
         else:
-            llm_model_id_to_points[llm_model_id_a][1] += 0.5
-            llm_model_id_to_points[llm_model_id_b][1] += 0.5
+            llm_model_id_to_points[llm_model_id_a][1] += 0.5  # type: ignore
+            llm_model_id_to_points[llm_model_id_b][1] += 0.5  # type: ignore
 
     print("faithfulness")
     sorted_models = sorted(

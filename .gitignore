@@ -7,4 +7,4 @@ venv
 
 data
 
-models
+open_ai_api_llm/api_key.txt
