@@ -1,5 +1,6 @@
 import os
 
+import utils
 from chunk_audio.chunk_audio_params import ChunkAudioParams
 from download_video import download_video_utils
 from chunk_audio import chunk_audio_utils
@@ -69,9 +70,12 @@ def chunk(base_path: str, audio_chunks_params: ChunkAudioParams) -> None:
 
     # save audio_chunks_data as json
 
-    json.dump(
-        {"num_chunks": num_chunks, "audio_length_in_ms": audio_length_in_ms},
-        open(audio_chunks_data_path, "w"),
+    utils.save_json(
+        path=audio_chunks_data_path,
+        json_for_saving={
+            "num_chunks": num_chunks,
+            "audio_length_in_ms": audio_length_in_ms,
+        },
     )
 
     print(f"...chunked audio")

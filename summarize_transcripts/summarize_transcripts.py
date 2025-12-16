@@ -52,8 +52,9 @@ def summarize(
 
     num_sentences_placeholder_value = str(
         summarize_transcripts_utils.get_num_sentences(
+            base_path=base_path,
+            chunk_audio_params=chunk_audio_params,
             summarize_transcripts_params=summarize_transcripts_params,
-            audio_length_in_ms=audio_length_in_ms,
         )
     )
 
