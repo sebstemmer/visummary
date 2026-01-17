@@ -69,6 +69,12 @@ full capacity of your machine. For example, if your Mac
 supports [MPS](https://developer.apple.com/documentation/metalperformanceshaders), install Ollama directly on your
 machine.
 
+For the evaluation, you need an API key for OpenAI that must be placed in the file `api_key.txt` under
+
+```
+analysis/open_ai_api_llm/api_key.txt
+```
+
 ## End-to-End Pipeline
 
 The pipeline can be executed with:
@@ -133,7 +139,7 @@ The `length_factor` determines the length of the summaries. The summaries are pe
 The evaluation of the Whisper models is started with the script:
 
 ```
-python -m analyze.analyze_different_stts.main
+python -m analysis.analyze_different_stts.main
 ```
 
 The script can be restarted because it persists data under the `data` folder and therefore knows what has already been
@@ -144,7 +150,7 @@ It computes the quality score and speed factor and outputs the models sorted by 
 The evaluation of the LLMs is started with the script:
 
 ```
-python -m analyze.analyze_different_llms.main
+python -m analysis.analyze_different_llms.main
 ```
 
 The script persists intermediate results under the `data` folder, allowing it to be restarted.

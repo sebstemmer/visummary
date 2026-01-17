@@ -1,7 +1,7 @@
 from black.lines import Callable
 from openai import OpenAI
 
-with open("open_ai_api_llm/api_key.txt", "r", encoding="UTF-8") as f:
+with open("analysis/open_ai_api_llm/api_key.txt", "r", encoding="UTF-8") as f:
     openai_api_key = f.read()
 
 openai_client = OpenAI(api_key=openai_api_key)

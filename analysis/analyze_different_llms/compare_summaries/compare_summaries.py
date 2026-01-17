@@ -252,12 +252,12 @@ def _compare_summary_a_and_b(
 
 YOU WILL RECEIVE:
 
-* A reference snippet from a video that consists of several consecutive snippet snippets that may overlap at the beginning and end.
-* Two candidate summaries (A and B) based on the provided snippet.
+* A reference transcript from a video that consists of several consecutive transcript snippets that may overlap at the beginning and end.
+* Two candidate summaries (A and B) based on the provided transcript.
 
 YOUR TASK:
 
-* With respect to the available snippet, compare summary A vs. B in two categories.
+* With respect to the available transcript, compare summary A vs. B in two categories.
 * There are three possible results: A is better than B, B is better than A, or it is a draw.
 * Your judgment must be symmetric.
 * Swapping summary A and summary B must not change the result, except for swapping the labels A and B.
