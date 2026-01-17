@@ -48,7 +48,7 @@ videos = {
 chunk_size_in_min = 3
 overlap_in_percent = 5
 
-base_path = "data/analyze_different_stts_v2"
+base_path = "data/analyze_different_stts"
 
 
 def create_video_base_path(video_id: str) -> str:
