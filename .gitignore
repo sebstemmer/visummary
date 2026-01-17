@@ -1,0 +1,10 @@
+**/.DS_Store
+
+.idea
+
+__pycache__
+venv
+
+data
+
+analysis/open_ai_api_llm/api_key.txt
